@@ -2,14 +2,14 @@
 
 use Automattic\WooCommerce\Blocks\Payments\Integrations\AbstractPaymentMethodType;
 
-final class Crypto_Checkout_Blocks extends AbstractPaymentMethodType {
+final class Glide_Blocks extends AbstractPaymentMethodType {
 
 	private $gateway;
-	protected $name = 'crypto_checkout';// your payment gateway name
+	protected $name = 'glide';// your payment gateway name
 
 	public function initialize() {
-		$this->settings = get_option('woocommerce_crypto_checkout_settings', []);
-		$this->gateway  = new Crypto_Checkout();
+		$this->settings = get_option('woocommerce_glide_settings', []);
+		$this->gateway  = new Glide();
 	}
 
 	public function is_active() {
@@ -49,11 +49,11 @@ final class Crypto_Checkout_Blocks extends AbstractPaymentMethodType {
 			$curr[] = 'xmr';
 		}
 
-		wp_register_script('crypto_checkout-main', 'https://cryptocheckout.co/crypto-woo.js?id=' . $this->gateway->mid . '&lang=' . $this->gateway->lang . '&curr=' . implode('+', $curr), array(), null, true);
+		wp_register_script('glide-main', 'https://cryptocheckout.co/crypto-woo.js?id=' . $this->gateway->mid . '&lang=' . $this->gateway->lang . '&curr=' . implode('+', $curr), array(), null, true);
 
-		wp_enqueue_script('crypto_checkout-main');
+		wp_enqueue_script('glide-main');
 		wp_register_script(
-			'crypto_checkout-blocks-integration',
+			'glide-blocks-integration',
 			'https://cryptocheckout.co/checkout.js',
 			[
 				'wc-blocks-registry',
