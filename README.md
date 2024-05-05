@@ -1,2 +1,2 @@
-# glide-for-woocommerce
+# Glide for woocommerce
 Glide integration into WooCommerce
