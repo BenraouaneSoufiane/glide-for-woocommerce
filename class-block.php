@@ -149,11 +149,11 @@ final class Crypto_Checkout_Blocks extends AbstractPaymentMethodType {
               });';
 		}
 		wp_add_inline_script(
-			'crypto_checkout-blocks-integration',
+			'glide-blocks-integration',
 			'var rate = ' . $r . ';
          var prices =' . json_encode($prices) . ';
-         var settings = window.wc.wcSettings.getSetting( "crypto_checkout_data", {} );
-var label = window.wp.htmlEntities.decodeEntities( settings.title ) || window.wp.i18n.__( "Crypto Checkout", "ccp" );
+         var settings = window.wc.wcSettings.getSetting( "glide_data", {} );
+var label = window.wp.htmlEntities.decodeEntities( settings.title ) || window.wp.i18n.__( "Glide", "ccp" );
 var Content = ( props ) => {
 	const { eventRegistration, emitResponse } = props;
 	const { onPaymentSetup } = eventRegistration;

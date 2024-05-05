@@ -1,12 +1,12 @@
 <?php
 
 /**
- * Plugin Name: CryptoCheckout
- * Plugin URI: https://cryptocheckout.co/
- * Description: Secure, simple plugin compatible with the latest WooCommerce Blocks Checkout experience & TrustWallet/MetaMask apps/extensions.
- * Author: Cryptocheckout.co
- * Author URI: https://cryptocheckout.co
- * Version: 1.2.2
+ * Plugin Name: Glide Payments
+ * Plugin URI: https://paywithglide.xyz/
+ * Description: Cross-token, cross-chain, gasless & without on-ramp payments.
+ * Author: Benraouane Soufiane
+ * Author URI: https://github.com/BenraouaneSoufiane/
+ * Version: 1.0.0
  * Text Domain: ccp
  * Domain Path: /languages
  *
@@ -32,7 +32,7 @@ function ccp_init_class() {
 add_filter('woocommerce_payment_gateways', 'ccp_add_gateway');
 
 function ccp_add_gateway($gateways) {
-	$gateways[] = 'crypto_checkout';
+	$gateways[] = 'glide';
 	return $gateways;
 }
 
@@ -70,7 +70,7 @@ function ccp_register() {
 		'woocommerce_blocks_payment_method_type_registration',
 		function (Automattic\WooCommerce\Blocks\Payments\PaymentMethodRegistry $payment_method_registry) {
 			// Register an instance of My_Custom_Gateway_Blocks
-			$payment_method_registry->register(new Crypto_Checkout_Blocks());
+			$payment_method_registry->register(new Glide_Blocks());
 		}
 	);
 }
@@ -84,15 +84,15 @@ function ccp_activation_notice() {
 		update_option('gpcrypto_deferred_admin_notices', $notices);
 	} else {		
 		$notices   = get_option('gpcrypto_deferred_admin_notices', array());
-		$notices[] = 'You\'re ready to receive crypto, WooCommerce->Settings->Payments->CryptoCheckout';
+		$notices[] = 'You\'re ready to receive crypto, generate your project ID <a href="https://paywithglide.xyz/" target="_black">here</a>';
 		update_option('gpcrypto_deferred_admin_notices', $notices);
-		// Generating the merchant ID
-        $r = wp_remote_get('https://cryptocheckout.co/back.php?woo=true');
+		// Automatic project ID generation
+        /*$r = wp_remote_get('https://paywithglide.co/project-id.php?woo=true');
 	    if(!is_wp_error($r) && !empty(json_decode($r['body']))){
-		    update_option('gpcrypto_mnemonic', json_decode($r['body'])->mnemonic->alltypes);
-		    update_option('gpcrypto_mid', json_decode($r['body'])->as);
+		    update_option('gpcrypto_projectid', json_decode($r['body'])->projectid);
+		    update_option('gpcrypto_otherfield', json_decode($r['body'])->otherfield);
 	    }
-		ob_clean();
+		ob_clean();*/
 	}
 }
 
