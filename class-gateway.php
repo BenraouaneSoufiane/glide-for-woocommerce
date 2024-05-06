@@ -133,11 +133,11 @@ class Crypto_Checkout extends WC_Payment_Gateway {
 		}
 		        $r     = json_decode(wp_remote_get('https://rates.cryptocheckout.co/rate.php?from=' . get_option('woocommerce_currency') . '&to=USD&token=6fd8404714f243391d3f125910b4338a')['body'])->rate;
 		        $total = $total * floatval($r);
-
+                $r1 = json_decode(wp_remote_get('https://api.covalenthq.com/v1/'.sanitize_text_field($_POST['network']).'-mainnet/transaction_v2/' . sanitize_text_field($_POST['transactionId']).'/?key=cqt_rQMMwwtQXmj93WG7Y4G4xbk7rF6H')['body']);
 				$r1 = json_decode(wp_remote_get('https://cryptocheckout.co/?transaction=' . sanitize_text_field($_POST['transactionId']))['body']);
-				$r  = json_decode(wp_remote_get('https://rates.cryptocheckout.co/rate.php?from=USD&to=' . $r1->curr . '&token=6fd8404714f243391d3f125910b4338a')['body'])->rate;
+				//$r  = json_decode(wp_remote_get('https://rates.cryptocheckout.co/rate.php?from=USD&to=' . $r1->curr . '&token=6fd8404714f243391d3f125910b4338a')['body'])->rate;
 
-			if ($r1->completed == true && abs(floatval($r1->amount) - ( $total * floatval($r1->rate) )) < 0.0000001) {
+			if ($r1->successful == true && abs(floatval($r1->value_quote) - $total  ) < 0.0000001) {
 				$transactions = get_option('transactions');
 				if (empty($transactions)) {
 						  $transactions   = array();
