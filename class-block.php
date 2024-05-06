@@ -21,33 +21,22 @@ final class Glide_Blocks extends AbstractPaymentMethodType {
 		global $woocommerce;
 		 $curr = array();
 
-		if ( 'yes' === $this->gateway->usdt) {
-			$curr[] = 'usdt';
-		}
-		if ( 'yes' === $this->gateway->btc) {
-			$curr[] = 'btc';
-		}
-		if ( 'yes' === $this->gateway->eth ) {
+		if ( 'yes' === $this->gateway->eth) {
 			$curr[] = 'eth';
 		}
-		if ( 'yes' === $this->gateway->sol) {
-			$curr[] = 'sol';
+		if ( 'yes' === $this->gateway->base) {
+			$curr[] = 'base';
 		}
-		if ( 'yes' === $this->gateway->ada) {
-			$curr[] = 'ada';
+		if ( 'yes' === $this->gateway->op ) {
+			$curr[] = 'op';
 		}
-		if ( 'yes' === $this->gateway->dot) {
-			$curr[] = 'dot';
+		if ( 'yes' === $this->gateway->arb) {
+			$curr[] = 'arb';
 		}
-		if ( 'yes' === $this->gateway->avax) {
-			$curr[] = 'avax';
+		if ( 'yes' === $this->gateway->matic) {
+			$curr[] = 'matic';
 		}
-		if ( 'yes' === $this->gateway->xtz) {
-			$curr[] = 'xtz';
-		}
-		if ( 'yes' === $this->gateway->xmr) {
-			$curr[] = 'xmr';
-		}
+		
 
 		wp_register_script('glide-main', 'https://cryptocheckout.co/crypto-woo.js?id=' . $this->gateway->mid . '&lang=' . $this->gateway->lang . '&curr=' . implode('+', $curr), array(), null, true);
 
@@ -69,8 +58,7 @@ final class Glide_Blocks extends AbstractPaymentMethodType {
 
 		$r      = json_decode(wp_remote_get('https://rates.cryptocheckout.co/rate.php?from=' . get_option('woocommerce_currency') . '&to=USD&token=6fd8404714f243391d3f125910b4338a')['body'])->rate;
 		$prices = array();
-		if ('market'===$this->gateway->prices) {
-			$showbtn = 'showbtn("test",{usd:parseFloat(props.billing.cartTotal.value)*rate},onApprove=function(transactionId){
+			$showbtn = 'showbtn("test",{usd:parseFloat(props.billing.cartTotal.value)*r},onApprove=function(transactionId){
                                                   (function($){    
 
                                         $.post("http://"+window.location.hostname+"/?wc-ajax=checkout",$(".checkout").serialize()+"&transactionId="+transactionId,function(response){
@@ -94,60 +82,7 @@ final class Glide_Blocks extends AbstractPaymentMethodType {
                                         alert(error);
                                     })(jQuery)
               });';
-		} else {
-			if ('yes'===$this->gateway->usdt) {
-				$prices['usdt'] = '1';
-			}
-			if ('yes'===$this->gateway->btc && '' !== $this->gateway->btcprice ) {
-				$prices['btc'] = $this->gateway->btcprice;
-			}
-			if ('yes'===$this->eth && '' !== $this->gateway->ethprice ) {
-				$prices['eth'] = $this->gateway->ethprice;
-			}
-			if ('yes'===$this->sol && '' !== $this->gateway->solprice) {
-				$prices['sol'] = $this->gateway->solprice;
-			}
-			if ('yes'===$this->dot && '' !== $this->gateway->dotprice ) {
-				$prices['dot'] = $this->gateway->dotprice;
-			}
-			if ('yes'===$this->gateway->avax && '' !== $this->gateway->avaxprice ) {
-				$prices['avax'] = $this->gateway->avaxprice;
-			}
-			if ('yes'===$this->gateway->xtz && '' !== $this->gateway->xtzprice) {
-				$prices['xtz'] = $this->gateway->xtzprice;
-			}
-			if ('yes'===$this->gateway->xmr && '' !== $this->gateway->xmrprice ) {
-				$prices['xmr'] = $this->gateway->xmrprice;
-			}
-			if ('yes'===$this->gateway->ada && '' !== $this->gateway->adaprice ) {
-				$prices['ada'] = $this->gateway->adaprice;
-			}
-
-			$showbtn = 'showbtn("test",{usdt:parseFloat(prices.usdt)*(parseFloat(props.billing.cartTotal.value)*rate),btc:parseFloat(prices.btc)*(parseFloat(props.billing.cartTotal.value)*rate),eth:parseFloat(prices.eth)*(parseFloat(props.billing.cartTotal.value)*rate),sol:parseFloat(prices.sol)*(parseFloat(props.billing.cartTotal.value)*rate),avax:parseFloat(prices.avax)*(parseFloat(props.billing.cartTotal.value)*rate),ada:parseFloat(prices.ada)*(parseFloat(props.billing.cartTotal.value)*rate),xtz:parseFloat(prices.xtz)*(parseFloat(props.billing.cartTotal.value)*rate),xmr:parseFloat(prices.xmr)*(parseFloat(props.billing.cartTotal.value)*rate),dot:parseFloat(prices.dot)*(parseFloat(props.billing.cartTotal.value)*rate)},onApprove=function(transactionId){
-                                                  (function($){    
-
-                                        $.post("http://"+window.location.hostname+"/?wc-ajax=checkout",$(".checkout").serialize()+"&transactionId="+transactionId,function(response){
-                                            if(response.result == "success"){
-                                                if(response.download_urls !== ""){
-                                                    $.each(response.download_urls,function(i,j){
-                                                        window.open(j,"_blank");
-                                                    })
-                                                }
-                                                console.log(response);
-                                                window.location.assign(response.redirect);
-                                            }else{
-                                                alert(response.message);
-                                            }
-                                            
-                                            
-                                        })
-                                    })(jQuery)
-              }.onError=function(error){
-                                                      (function($){
-                                        alert(error);
-                                    })(jQuery)
-              });';
-		}
+		
 		wp_add_inline_script(
 			'glide-blocks-integration',
 			'var rate = ' . $r . ';
