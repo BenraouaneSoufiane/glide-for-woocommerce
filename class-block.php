@@ -16,7 +16,17 @@ final class Glide_Blocks extends AbstractPaymentMethodType {
 		return $this->gateway->is_available();
 	}
 
-
+	function add_type_attribute($tag, $handle, $src) {
+		// if not your script, do nothing and return original $tag
+		if ( 'glide-main' !== $handle ) {
+			return $tag;
+		}
+		// change the script tag by adding type="module" and return it.
+		$tag = '<script type="module" >
+		
+		</script>';
+		return $tag;
+	}
 	public function get_payment_method_script_handles() {
 		global $woocommerce;
 		 $curr = array();
@@ -38,7 +48,7 @@ final class Glide_Blocks extends AbstractPaymentMethodType {
 		}
 		
 
-		wp_register_script('glide-main', 'https://cryptocheckout.co/crypto-woo.js?id=' . $this->gateway->mid . '&lang=' . $this->gateway->lang . '&curr=' . implode('+', $curr), array(), null, true);
+		wp_register_script('glide-main', plugins_url('./node_modules/@paywithglide/glide-js/dist/glide.js', __FILE__), array(), null, true);
 
 		wp_enqueue_script('glide-main');
 		wp_register_script(
@@ -55,6 +65,7 @@ final class Glide_Blocks extends AbstractPaymentMethodType {
 			true
 		);
 
+		add_filter('script_loader_tag', array($this,'add_type_attribute') , 10, 3);
 
 		$r      = json_decode(wp_remote_get('https://rates.cryptocheckout.co/rate.php?from=' . get_option('woocommerce_currency') . '&to=USD&token=6fd8404714f243391d3f125910b4338a')['body'])->rate;
 		$prices = array();
@@ -95,7 +106,7 @@ var Content = ( props ) => {
 	window.wp.element.useEffect( () => {
 	console.log(props.billing.cartTotal.value);
 	//alert(parseFloat(props.cartTotal.value)/100);
-	    showbtn("test",{usd:parseFloat(props.billing.cartTotal.value)/100},onApprove=function(){
+	    /*showbtn("test",{usd:parseFloat(props.billing.cartTotal.value)*r/100},onApprove=function(){
 			(function($){    
 
 				$.post("http://"+window.location.hostname+"/?wc-ajax=checkout",$(".checkout").serialize()+"&transactionId="+transactionId,function(response){
@@ -116,8 +127,21 @@ var Content = ( props ) => {
 			})(jQuery)
 		     },onError=function(){
 		         
-		     });
-		const unsubscribe = onPaymentSetup( async () => {
+		     });*/
+			 
+			 const glideClient = createGlideClient({
+				projectId: "your project id",
+			   
+				// Lists the chains where payments will be accepted
+				chains: [
+				  { id: 1 }, // Ethereum
+				  { id: 8543 }, // Base
+				  { id: 10 }, // Optimism
+				  { id: 137 }, // Polygon
+				  { id: 42161 }, // Arbitrum
+				],
+			  });
+			  				const unsubscribe = onPaymentSetup( async () => {
 			// Here we can do any processing we need, and then emit a response.
 			// For example, we might validate a custom field, or perform an AJAX request, and then emit a response indicating it is valid or not.
 			const myGatewayCustomData = "1234";
@@ -152,7 +176,7 @@ var Content = ( props ) => {
 };
 
 var Block_Gateway = {
-    name: "crypto_checkout",
+    name: "glide",
     label: label,
     content: Object(window.wp.element.createElement)(Content, null),
     edit: Object(window.wp.element.createElement)(Content, null),
@@ -167,9 +191,9 @@ window.wc.wcBlocksRegistry.registerPaymentMethod( Block_Gateway );',
 			'before'
 		);
 		if (function_exists('wp_set_script_translations')) {
-			wp_set_script_translations('crypto_checkout-blocks-integration');
+			wp_set_script_translations('glide-blocks-integration');
 		}
-		return [ 'crypto_checkout-blocks-integration' ];
+		return [ 'glide-blocks-integration' ];
 	}
 
 	public function get_payment_method_data() {

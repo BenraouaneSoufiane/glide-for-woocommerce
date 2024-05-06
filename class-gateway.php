@@ -1,6 +1,6 @@
 <?php
 
-class Crypto_Checkout extends WC_Payment_Gateway {
+class Glide extends WC_Payment_Gateway {
 
 		   public $id;
 			  public $icon;
