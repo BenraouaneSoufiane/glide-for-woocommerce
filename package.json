@@ -1,15 +1,19 @@
 {
   "dependencies": {
-    "@paywithglide/glide-js": "^0.6.2"
+    "@paywithglide/glide-js": "^0.6.2",
+    "browser-resolve": "^2.0.0",
+    "wagmi": "^2.8.1"
   },
   "name": "glide-for-woocommerce",
   "description": "Glide integration into WooCommerce",
   "version": "1.0.0",
   "main": "glide.js",
-  "type":"module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "esmify": "^2.1.1"
+  }
 }
